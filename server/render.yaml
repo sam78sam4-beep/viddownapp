@@ -3,10 +3,10 @@ services:
     name: viddown-server
     env: node
     plan: free
-    buildCommand: "apt-get update && apt-get install -y yt-dlp && npm install"
-    startCommand: "node server.js"
+    buildCommand: "cd server && chmod +x install-yt-dlp.sh && ./install-yt-dlp.sh && npm install"
+    startCommand: "cd server && node server.js"
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value:  10000
+        value: 10000

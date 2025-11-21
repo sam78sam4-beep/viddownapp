@@ -1,17 +1,69 @@
 const express = require('express');
 const cors = require('cors');
-const { spawn } = require('child_process');
+const { spawn, execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ✅ التحقق من تثبيت yt-dlp
+function checkYtDlpInstallation() {
+    try {
+        execSync('which yt-dlp', { stdio: 'pipe' });
+        console.log('✅ yt-dlp is installed and ready');
+        return true;
+    } catch (error) {
+        console.warn('⚠️ yt-dlp is not installed. Attempting installation...');
+        try {
+            execSync('apt-get update && apt-get install -y yt-dlp', { stdio: 'inherit' });
+            console.log('✅ yt-dlp installed successfully');
+            return true;
+        } catch (installError) {
+            console.error('❌ Failed to install yt-dlp:', installError.message);
+            console.log('ℹ️ Please install yt-dlp manually: pip install yt-dlp');
+            return false;
+        }
+    }
+}
+
+// تشغيل التحقق عند بدء الخادم
+checkYtDlpInstallation();
+
 // Store active downloads for progress tracking
 const activeDownloads = new Map();
 
 app.use(cors());
 app.use(express.json());
+
+// ✅ Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        port: PORT
+    });
+});
+
+// ✅ Info endpoint
+app.get('/info', (req, res) => {
+    res.status(200).json({
+        name: 'VidDown Server',
+        version: '1.0.0',
+        description: 'Download videos from YouTube, Instagram, TikTok, Facebook',
+        endpoints: {
+            health: '/health',
+            info: '/info',
+            search: '/search?q=query&platform=youtube',
+            trending: '/trending?platform=youtube',
+            preview: '/preview',
+            download: '/download',
+            'convert-audio': '/convert-audio',
+            progress: '/progress/:downloadId'
+        }
+    });
+});
 
 // Function to get video info using yt-dlp
 function getVideoInfo(url) {

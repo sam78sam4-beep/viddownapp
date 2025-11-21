@@ -20,4 +20,10 @@
   "optionalDependencies": {
     "yt-dlp": "^3.0.0"
   }
+  {
+  "scripts": {
+    "start": "npm install && pip install yt-dlp && node server.js",
+    "prestart": "pip install yt-dlp || echo 'yt-dlp installation failed, continuing...'"
+  }
+}
 }

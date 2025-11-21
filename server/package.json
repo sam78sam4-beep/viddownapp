@@ -4,7 +4,7 @@
   "description": "Video download server",
   "main": "server.js",
   "scripts": {
-    "start": "npm install && node server.js",
+    "start": "node server.js",
     "dev": "node server.js",
     "install-deps": "npm install"
   },
@@ -16,9 +16,5 @@
     "cors": "^2.8.5",
     "fluent-ffmpeg": "^2.1.2",
     "multer": "^1.4.5-lts.1"
-  },
-  "optionalDependencies": {
-    "yt-dlp": "^3.0.0"
   }
-  
 }

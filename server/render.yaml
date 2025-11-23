@@ -3,7 +3,7 @@ services:
     name: viddown-server
     env: node
     plan: free
-    buildCommand: "cd server && pip install yt-dlp && npm install"
+    buildCommand: "chmod +x install-yt-dlp.sh && ./install-yt-dlp.sh && cd server && npm install"
     startCommand: "cd server && node server.js"
     envVars:
       - key: NODE_ENV
